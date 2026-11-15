@@ -2,43 +2,41 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['OrderDate', 'TotalAmount', 'status'])]
+#[Fillable(['uid', 'order_date', 'total_amount', 'status'])]
 class Order extends Model
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
-
     protected $primaryKey = 'order_id';
-    protected $foreignKey = 'userID';
     public $incrementing = true;
     protected $keyType = 'int';
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'OrderDate' => 'datetime',
-            'TotalAmount' => 'integer',
-            'status' => 'boolean',
+            'order_date' => 'datetime',
+            'total_amount' => 'decimal:2',
         ];
     }
+
     /**
      * Get the user that owns this order.
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'userID', 'userID');
+        return $this->belongsTo(User::class, 'uid', 'uid');
+    }
+
+    /**
+     * Get all order items for this order.
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'order_id', 'order_id');
     }
 }
