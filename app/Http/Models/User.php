@@ -19,13 +19,13 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
-    protected $primaryKey = 'uid';
+    protected $primaryKey = 'userID';
     public $incrementing = true;
     protected $keyType = 'int';
 
     /**
      * Get the attributes that should be cast.
-     *
+     * test test
      * @return array<string, string>
      */
     protected function casts(): array
