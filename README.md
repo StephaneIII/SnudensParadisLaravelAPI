@@ -1,74 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Snudens Paradis API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel REST API for managing products, product attributes, users, and orders.
+The API uses Laravel Sanctum personal access tokens to authenticate protected
+routes.
 
-## About Laravel
+## Requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3 or later
+- Composer
+- Node.js and npm (for the Vite frontend assets)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Getting started
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Install PHP dependencies:
 
-## Application migrations
+   ```sh
+   composer install
+   ```
 
-The application migrations use the existing models' snake_case names and include
-timestamps. Product ratings, brands, and attribute-value bounds may be null.
-Foreign-key deletes cascade to related records.
+2. Create your local environment file and application key:
 
-The users migration only runs on an empty users table; it stops rather than
-convert or discard existing users. Back up your database before migrating.
-Rolling back the application tables deletes their data and is blocked while
-users exist.
+   ```sh
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-The database seeder creates sample records for the six application tables. It
-includes a test account and uses the factory's shared development password;
-do not use these seeded accounts in production. A second run without clearing
-the sample test account will fail and roll back the seed.
+   The example configuration uses SQLite. Ensure `database/database.sqlite`
+   exists, or configure another database in `.env`.
 
-## Learning Laravel
+3. Run migrations and, if you want sample data, seed the database:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+   ```sh
+   php artisan migrate
+   # Optional:
+   php artisan db:seed
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. Install and build frontend assets:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+   ```sh
+   npm install
+   npm run build
+   ```
 
-## Agentic Development
+5. Start the API:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+   ```sh
+   php artisan serve
+   ```
 
-```bash
-composer require laravel/boost --dev
+The API is available at `http://localhost:8000/api`.
 
-php artisan boost:install
+## API
+
+All routes are prefixed with `/api`. Send and receive JSON using the
+`Content-Type: application/json` and `Accept: application/json` headers.
+
+### Public routes
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/login` | Authenticate and receive a Sanctum token |
+| `POST` | `/register` | User registration route |
+| `GET` | `/products` | List products and their attribute values |
+| `GET` | `/products/{id}` | Get a product and its attribute values |
+| `GET` | `/attributes-values` | List attribute values |
+| `GET` | `/attributes-values/{id}` | Get an attribute value |
+
+### Authenticated routes
+
+Send the token returned by `/login` with protected requests:
+
+```http
+Authorization: Bearer <token>
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/logout` | Revoke the authenticated user's tokens |
+| `POST` | `/products` | Create a product |
+| `PUT` | `/products/{id}` | Update a product |
+| `DELETE` | `/products/{id}` | Delete a product |
+| `GET` | `/orders/{UID}` | List order items for a user |
+| `POST` | `/orders/{UID}` | Create an order |
+| `POST` | `/orders/{orderId}/items` | Add, update, or remove a product in an order |
+| `POST` | `/attributes-values` | Create an attribute value |
+| `PUT` | `/attributes-values/{id}` | Update an attribute value |
+| `DELETE` | `/attributes-values/{id}` | Delete an attribute value |
 
-## Contributing
+The `/register` route currently points to a `register` controller action, while
+`UserController` defines `signup`; align these names before relying on
+registration.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Login example
 
-## Code of Conduct
+```sh
+curl -X POST http://localhost:8000/api/login \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"your-password"}'
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The response contains the user and a `token` value. Include that value as a
+Bearer token on authenticated requests.
 
-## Security Vulnerabilities
+## Database and sample data
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Migrations create users, products, attributes, attribute values, orders, and
+order items. Related product, attribute, and order records use cascading
+foreign-key deletes.
 
-## License
+`php artisan db:seed` creates sample users, products, attributes, and orders,
+including `test@example.com`. The seeded account uses the factory's shared
+development password; never use seeded accounts in production. Seeding again
+without clearing the sample data may fail because the test email already
+exists.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The users migration stops rather than converting or deleting an existing users
+table. Back up the database before migrating. Rolling back the application
+tables is blocked while users exist.
+
+## Tests
+
+Run the test suite with:
+
+```sh
+php artisan test
+```
