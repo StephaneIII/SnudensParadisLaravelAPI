@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,8 +12,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['uid', 'order_date', 'total_amount', 'status'])]
 class Order extends Model
 {
+    /** @use HasFactory<OrderFactory> */
+    use HasFactory;
+
     protected $primaryKey = 'order_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected function casts(): array

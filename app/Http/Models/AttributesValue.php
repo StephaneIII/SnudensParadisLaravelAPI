@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\AttributesValueFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,8 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['product_id', 'attributes_id', 'value', 'min_value', 'max_value'])]
 class AttributesValue extends Model
 {
+    /** @use HasFactory<AttributesValueFactory> */
+    use HasFactory;
+
     protected $primaryKey = ['product_id', 'attributes_id'];
+
     public $incrementing = false;
+
     protected $keyType = 'int';
 
     protected function casts(): array

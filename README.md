@@ -21,6 +21,22 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Application migrations
+
+The application migrations use the existing models' snake_case names and include
+timestamps. Product ratings, brands, and attribute-value bounds may be null.
+Foreign-key deletes cascade to related records.
+
+The users migration only runs on an empty users table; it stops rather than
+convert or discard existing users. Back up your database before migrating.
+Rolling back the application tables deletes their data and is blocked while
+users exist.
+
+The database seeder creates sample records for the six application tables. It
+includes a test account and uses the factory's shared development password;
+do not use these seeded accounts in production. A second run without clearing
+the sample test account will fail and roll back the seed.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

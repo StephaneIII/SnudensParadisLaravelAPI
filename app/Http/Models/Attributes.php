@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\AttributesFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,8 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['attributes_name', 'description', 'data_type'])]
 class Attributes extends Model
 {
+    /** @use HasFactory<AttributesFactory> */
+    use HasFactory;
+
     protected $primaryKey = 'attributes_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected function casts(): array
