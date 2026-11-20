@@ -17,23 +17,15 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $primaryKey = 'uid';
-
     public $incrementing = true;
-
     protected $keyType = 'int';
-
-    public function getKeyName(): string
-    {
-        return $this->primaryKey;
-    }
 
     /**
      * Get the attributes that should be cast.
      * test test
-     *
      * @return array<string, string>
      */
     protected function casts(): array
