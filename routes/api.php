@@ -1,13 +1,12 @@
 <?php
 
 use App\Http\Controllers\API\AttributesValueController;
-use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\ProductController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
-//public routes
+// public routes
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 
@@ -17,10 +16,11 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/attributes-values', [AttributesValueController::class, 'index']);
 Route::get('/attributes-values/{id}', [AttributesValueController::class, 'show']);
 
-//protected routes
+// protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // User routes
     Route::post('/logout', [UserController::class, 'logout']);
+    Route::put('/profile', [UserController::class, 'update']);
 
     // Product routes (admin only)
     Route::post('/products', [ProductController::class, 'create']);
